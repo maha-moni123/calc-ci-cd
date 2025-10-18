@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template_string
-from .core import add, sub, mul, div
+from .core import add, sub, mul, div, sqrt, power, sin, cos, tan
 
 HTML = """
 <!doctype html><html><head><meta charset="utf-8"><title>Calculator</title>
@@ -13,7 +13,7 @@ button{margin-top:1rem;padding:.6rem 1rem;border:0;border-radius:8px;background:
 .result{margin-top:1rem;font-weight:700}
 .muted{color:#6b7280;font-size:.9rem}
 </style></head><body>
-<div class="card"><h2>Calculator (V1.1)</h2>
+<div class="card"><h2>Calculator (V1.2)</h2>
 <form method="get" action="/calc-ui">
 <label for="op">Operation</label>
 <select name="op" id="op" required>
@@ -56,7 +56,12 @@ def create_app():
             elif op == "sub": res = sub(a, b)
             elif op == "mul": res = mul(a, b)
             elif op == "div": res = div(a, b)
-            else: return jsonify(error="op must be one of add|sub|mul|div"), 400
+            elif op == "sqrt": res = sqrt(a)
+            elif op == "power": res = power(a, b)
+            elif op == "sin": res = sin(a)
+            elif op == "cos": res = cos(a)
+            elif op == "tan": res = tan(a)
+            else: return jsonify(error="op must be one of add|sub|mul|div|sqrt|power|sin|cos|tan"), 400
             return jsonify(result=res)
         except ZeroDivisionError as e:
             return jsonify(error=str(e)), 400
@@ -79,7 +84,7 @@ def create_app():
             elif op == "sub": result = sub(a, b)
             elif op == "mul": result = mul(a, b)
             elif op == "div": result = div(a, b)
-            else: error = "op must be one of add|sub|mul|div"
+            else: error = "op must be one of add|sub|mul|div|sqrt|power|sin|cos|tan"
         except ZeroDivisionError as e:
             error = str(e)
         return render_template_string(HTML, op=op, a=a, b=b, result=result, error=error)
